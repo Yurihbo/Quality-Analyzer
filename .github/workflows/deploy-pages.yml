@@ -44,6 +44,7 @@ jobs:
       - name: Build static frontend
         env:
           GITHUB_ACTIONS: true
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
         run: pnpm exec vite build --outDir ../dist-pages
 
       - name: Upload Pages artifact

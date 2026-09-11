@@ -41,6 +41,14 @@ The backend can run on any Node.js host that supports a long-running Express pro
 
 The API exposes `GET /health` and the tRPC mutation at `POST /api/trpc/analyzer.analyze`. The in-memory rate limit is intentionally lightweight and resets when the process restarts. This is suitable for a small stateless deployment; a distributed rate limiter is only needed when running multiple instances.
 
+### Deploy on Render Free
+
+The repository includes `render.yaml`, a Render Blueprint for the stateless API. To publish it, create an account at [render.com](https://render.com), select **New → Blueprint**, connect the `Yurihbo/Quality-Analyzer` repository, and choose the `main` branch. Render will read `render.yaml`, install dependencies, build the Node.js server, start `pnpm start`, and monitor `/health`.
+
+During the first setup, define `CORS_ALLOWED_ORIGIN` as `https://yurihbo.github.io`. After the service finishes its first deploy, copy its public HTTPS URL, such as `https://quality-analyzer-api.onrender.com`.
+
+Then open the GitHub repository settings at **Settings → Secrets and variables → Actions → Variables**, create the repository variable `VITE_API_URL` with the Render URL, and run the **Deploy frontend to GitHub Pages** workflow again. Future commits to `main` will rebuild the frontend with that API URL automatically.
+
 ## GitHub Pages deployment
 
 GitHub Pages hosts the static React frontend through `.github/workflows/deploy-pages.yml`. The analysis API still requires the Node.js/Express server. When the backend is deployed, set `VITE_API_URL` to its public origin during the Pages build, for example:
