@@ -32,3 +32,13 @@ pnpm build
 ```
 
 The analyzer intentionally does not execute target-site JavaScript, attempt authentication, exploit endpoints, brute-force, or perform destructive testing. Technology and quality claims are limited to public response evidence.
+
+## GitHub Pages deployment
+
+GitHub Pages hosts the static React frontend through `.github/workflows/deploy-pages.yml`. The analysis API still requires the Node.js/Express server. When the backend is deployed, set `VITE_API_URL` to its public origin during the Pages build, for example:
+
+```bash
+VITE_API_URL=https://your-backend.example.com pnpm exec vite build --outDir ../dist-pages
+```
+
+If `VITE_API_URL` is not set, the frontend shows a clear connection message instead of attempting to parse the GitHub Pages HTML 404 response as JSON.
