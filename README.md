@@ -14,7 +14,9 @@ Quality Analyzer is a developer-focused web tool that performs a **passive analy
 
 ## Architecture
 
-The app uses the WebDev full-stack template: React 19 + TypeScript + Vite + Tailwind CSS on the client, with Express and tRPC on the server. `server/analyzer.ts` contains the modular passive analyzer and returns a normalized report. `server/routers.ts` exposes the public `analyzer.analyze` mutation with input validation and rate limiting. The current MVP does not persist analysis history; the database scaffold remains available for a later history feature.
+The app uses React 19 + TypeScript + Vite + Tailwind CSS on the client, with a minimal Express and tRPC API on the server. `server/analyzer.ts` contains the modular passive analyzer and returns a normalized report. `server/routers.ts` exposes only the public `analyzer.analyze` mutation with input validation and rate limiting. The backend is stateless: it does not require a database, authentication, file storage, or background worker. Each request enters, is analyzed, and returns JSON; no analysis is persisted.
+
+The original WebDev scaffold files for database and OAuth remain in the repository only as unused template compatibility files. They are not imported by the runtime entry point and are not required to deploy the analyzer API.
 
 ## Development
 
@@ -32,6 +34,12 @@ pnpm build
 ```
 
 The analyzer intentionally does not execute target-site JavaScript, attempt authentication, exploit endpoints, brute-force, or perform destructive testing. Technology and quality claims are limited to public response evidence.
+
+## Simple backend deployment
+
+The backend can run on any Node.js host that supports a long-running Express process. It only needs `PORT`; no `DATABASE_URL`, OAuth credentials, Firebase Blaze plan, or storage bucket is required. For a frontend hosted on another domain, set `CORS_ALLOWED_ORIGIN` to the exact frontend origin, such as `https://yurihbo.github.io`.
+
+The API exposes `GET /health` and the tRPC mutation at `POST /api/trpc/analyzer.analyze`. The in-memory rate limit is intentionally lightweight and resets when the process restarts. This is suitable for a small stateless deployment; a distributed rate limiter is only needed when running multiple instances.
 
 ## GitHub Pages deployment
 
