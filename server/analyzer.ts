@@ -86,7 +86,7 @@ export interface AnalysisReport {
   errors: Finding[];
 }
 
-const MAX_HTML_BYTES = 3_000_000;
+const MAX_HTML_BYTES = 5_000_000;
 const REQUEST_TIMEOUT_MS = 10_000;
 const MAX_REDIRECTS = 5;
 const USER_AGENT = "QualityAnalyzer/1.0 (+passive-public-analysis)";
