@@ -32,6 +32,11 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .topnav .topnav-active::after { position: absolute; bottom: -25px; left: 50%; height: 2px; width: 14px; transform: translateX(-50%); background: #d7f36b; content: ""; }
 .topbar-status { display: inline-flex; align-items: center; gap: 7px; color: #52525b; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
 .status-pulse { height: 6px; width: 6px; border-radius: 999px; background: #a3e635; box-shadow: 0 0 0 4px rgba(163,230,53,.09); }
+.report-header-actions { display: flex; align-items: center; gap: 18px; }
+.pdf-button { display: inline-flex; min-height: 38px; align-items: center; gap: 8px; border: 1px solid rgba(215,243,107,.32); border-radius: 9px; background: rgba(215,243,107,.08); padding: 0 12px; color: #d7f36b; font-size: 11px; font-weight: 600; transition: background 160ms var(--ease-out), border-color 160ms var(--ease-out), transform 160ms var(--ease-out); }
+.pdf-button:hover:not(:disabled) { border-color: rgba(215,243,107,.65); background: rgba(215,243,107,.16); }
+.pdf-button:active:not(:disabled) { transform: scale(.97); }
+.pdf-button:disabled { cursor: wait; opacity: .6; }
 
 .hero-shell { position: relative; margin: 0 auto; max-width: 1180px; padding: 116px 40px 48px; }
 .hero-shell::before { pointer-events: none; position: absolute; top: 46px; right: 5%; width: 360px; height: 360px; border: 1px solid rgba(255,255,255,.04); border-radius: 50%; content: ""; }
@@ -78,6 +83,8 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .topbar { min-height: 60px; padding: env(safe-area-inset-top) 16px 0; }
   .topnav { gap: 12px; margin-right: 0; }
   .topbar-status { display: none; }
+  .report-header-actions { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .pdf-button { min-height: 42px; justify-content: center; width: 100%; }
   .hero-shell { padding: 64px 20px calc(36px + env(safe-area-inset-bottom)); }
   .hero-shell::before, .hero-shell::after { display: none; }
   .hero-copy h1 { font-size: clamp(3.2rem, 15vw, 5.2rem); }

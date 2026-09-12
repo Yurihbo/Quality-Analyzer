@@ -7,6 +7,7 @@ import {
   ChevronDown,
   CircleDot,
   Code2,
+  Download,
   ExternalLink,
   FileCode2,
   Gauge,
@@ -28,6 +29,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { downloadReportPdf } from "@/lib/reportPdf";
 
 const loadingSteps = ["Fetching page", "Reading HTML", "Inspecting headers", "Detecting technologies", "Checking SEO", "Checking security", "Checking performance", "Finding errors"];
 const severityOrder = ["all", "critical", "high", "medium", "low"] as const;
@@ -154,6 +156,7 @@ function ScoreCard({ label, score, icon: Icon, detail, onClick }: { label: strin
 
 function ReportView({ report }: { report: AnalysisReport }) {
   const [filter, setFilter] = useState<SeverityFilter>("all");
+  const [isExporting, setIsExporting] = useState(false);
   const filteredErrors = useMemo(() => filter === "all" ? report.errors : report.errors.filter((error) => error.severity === filter), [filter, report.errors]);
   const counts = severityOrder.slice(1).reduce<Record<string, number>>((acc, severity) => { acc[severity] = report.errors.filter((error) => error.severity === severity).length; return acc; }, {});
   const hostLabel = report.hostname.replace(/^www\./, "");
@@ -161,7 +164,7 @@ function ReportView({ report }: { report: AnalysisReport }) {
     <main className="mx-auto max-w-6xl px-5 pb-24 pt-8 sm:px-8 lg:px-10">
       <div className="flex flex-col gap-5 border-b border-white/[0.08] pb-7 sm:flex-row sm:items-end sm:justify-between">
         <div><p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-600">Analysis report</p><h1 className="mt-2 break-all text-2xl font-semibold tracking-tight text-zinc-100 sm:text-3xl">{hostLabel}</h1><p className="mt-2 flex flex-wrap items-center gap-2 text-xs text-zinc-500"><span>Analyzed just now</span><span className="text-zinc-700">/</span><span>{(report.durationMs / 1000).toFixed(1)}s</span><span className="text-zinc-700">/</span><a className="inline-flex items-center gap-1 transition-colors hover:text-zinc-200" href={report.url} target="_blank" rel="noreferrer">Open site <ExternalLink className="h-3 w-3" /></a></p></div>
-        <div className="flex items-center gap-3"><div className="score-ring" style={{ background: `conic-gradient(#d7f36b ${report.overallScore * 3.6}deg, rgba(255,255,255,.08) 0deg)` }}><div className="score-ring-inner"><span className={`text-2xl font-semibold ${scoreTone(report.overallScore)}`}>{report.overallScore}</span><span className="text-[10px] uppercase tracking-widest text-zinc-600">/ 100</span></div></div><div><p className="text-xs uppercase tracking-[0.18em] text-zinc-600">Quality score</p><p className={`mt-1 text-lg font-medium ${scoreTone(report.overallScore)}`}>{report.grade}</p></div></div>
+        <div className="report-header-actions"><div className="flex items-center gap-3"><div className="score-ring" style={{ background: `conic-gradient(#d7f36b ${report.overallScore * 3.6}deg, rgba(255,255,255,.08) 0deg)` }}><div className="score-ring-inner"><span className={`text-2xl font-semibold ${scoreTone(report.overallScore)}`}>{report.overallScore}</span><span className="text-[10px] uppercase tracking-widest text-zinc-600">/ 100</span></div></div><div><p className="text-xs uppercase tracking-[0.18em] text-zinc-600">Quality score</p><p className={`mt-1 text-lg font-medium ${scoreTone(report.overallScore)}`}>{report.grade}</p></div></div><button className="pdf-button" type="button" onClick={async () => { setIsExporting(true); try { await downloadReportPdf(report); } finally { setIsExporting(false); } }} disabled={isExporting}><Download className="h-4 w-4" />{isExporting ? "Preparing…" : "Download PDF"}</button></div>
       </div>
 
       <section className="border-b border-white/[0.08] py-8" id="overview"><div className="mb-5 flex items-center justify-between"><div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-600">Overview</p><h2 className="mt-1 text-xl font-semibold text-zinc-100">Signal, not noise.</h2></div><span className="font-mono text-xs text-zinc-600">{report.summary.requests} requests observed</span></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"><ScoreCard label="Performance" score={report.scores.performance} icon={Gauge} detail={`${report.performance.checks.length} live checks`} /><ScoreCard label="SEO" score={report.scores.seo} icon={Search} detail={`${report.seo.checks.length} live checks`} /><ScoreCard label="Security" score={report.scores.security} icon={ShieldCheck} detail={`${report.security.checks.length} header checks`} /><ScoreCard label="Accessibility" score={report.scores.accessibility} icon={Sparkles} detail={`${report.accessibility.checks.length} markup checks`} /><ScoreCard label="Best practices" score={report.scores.bestPractices} icon={Radar} detail="Weighted from measured categories" /><ScoreCard label="Errors" score={report.scores.errors} icon={AlertCircle} detail={`${report.summary.errors} issues found · click to inspect`} onClick={() => document.getElementById("errors")?.scrollIntoView({ behavior: "smooth" })} /></div><div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4"><div className="stat-cell"><span>Issues found</span><strong>{report.summary.errors}</strong></div><div className="stat-cell"><span>Warnings found</span><strong>{report.summary.warnings}</strong></div><div className="stat-cell"><span>Technologies detected</span><strong>{report.summary.technologies}</strong></div><div className="stat-cell"><span>HTML elements</span><strong>{report.summary.elements}</strong></div></div></section>
