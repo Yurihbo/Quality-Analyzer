@@ -16,9 +16,32 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <title>Quality Analyzer</title>
+    <style>
+      #boot-state {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        background: #0a0a0a;
+        color: #a3e635;
+        font: 500 0.8rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+        text-align: center;
+      }
+      #boot-state small { display: block; margin-top: 0.5rem; color: #737373; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="boot-state">Loading Quality Analyzer<small>Preparing the analysis workspace…</small></div>
+    </div>
+    <script>
+      window.addEventListener("error", function (event) {
+        if (event.filename && event.filename.includes("/assets/")) {
+          var state = document.getElementById("boot-state");
+          if (state) state.innerHTML = "Unable to load the application<small>Please refresh the page to try again.</small>";
+        }
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
     <script defer src="%VITE_ANALYTICS_ENDPOINT%/umami" data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
   </body>

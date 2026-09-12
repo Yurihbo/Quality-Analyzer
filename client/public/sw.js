@@ -1,4 +1,4 @@
-const CACHE_NAME = "quality-analyzer-shell-v1";
+const CACHE_NAME = "quality-analyzer-shell-v2";
 const APP_SHELL = ["./", "./manifest.webmanifest", "./favicon-32.png", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", (event) => {
@@ -16,6 +16,24 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
+
+  // Never serve a stale HTML shell. GitHub Pages deploys immutable, hashed
+  // assets, so an old index.html can otherwise point at files that no longer
+  // exist and leave the application with a blank screen until a hard refresh.
+  if (request.mode === "navigate" || request.destination === "document") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match("./"))),
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(request).then((cached) => cached || fetch(request).then((response) => {
