@@ -3,11 +3,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, Home } from "lucide-react";
 import { useLocation } from "wouter";
 
+const HOME_PATH = `${import.meta.env.BASE_URL.replace(/\/$/, "") || ""}/`;
+
 export default function NotFound() {
   const [, setLocation] = useLocation();
 
   const handleGoHome = () => {
-    setLocation("/");
+    setLocation(HOME_PATH);
   };
 
   return (
