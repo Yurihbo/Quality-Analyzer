@@ -228,6 +228,6 @@ O resultado é uma aplicação full-stack voltada para análise técnica de webs
 
 ## Autor
 
-Desenvolvido por **Yuri de Sousa Silva**.
+Desenvolvido por **Yuri de Sousa Silva**.Yurihbo
 
 [GitHub](https://github.com/Yurihbo) · [Quality Analyzer](https://github.com/Yurihbo/Quality-Analyzer)
