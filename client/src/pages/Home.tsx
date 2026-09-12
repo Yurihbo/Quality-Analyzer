@@ -133,6 +133,10 @@ function getFixAdvice(error: Finding) {
   if (signal.includes("alt") || signal.includes("image")) return "Adicione alt text descritivo às imagens informativas; use alt vazio apenas em imagens decorativas.";
   if (signal.includes("viewport")) return "Inclua a meta viewport para que o layout se adapte corretamente a celulares.";
   if (signal.includes("canonical")) return "Defina uma URL canônica absoluta para evitar sinais duplicados aos mecanismos de busca.";
+  if (signal.includes("open graph") || signal.includes("og:title") || signal.includes("og:description") || signal.includes("og:image")) return "Complete og:title, og:description e og:image no <head>; use uma imagem absoluta, legível em redes sociais e coerente com a página compartilhada.";
+  if (signal.includes("robots")) return "Crie /robots.txt na raiz, permita o rastreamento das páginas públicas e adicione uma linha Sitemap apontando para o XML correto.";
+  if (signal.includes("sitemap")) return "Gere /sitemap.xml com URLs canônicas indexáveis, atualize lastmod quando necessário e referencie o arquivo no robots.txt e no Search Console.";
+  if (signal.includes("multiple h1") || signal.includes("h1 headings")) return "Mantenha um único H1 para o assunto principal e organize os demais títulos em uma hierarquia H2/H3 sem saltos.";
   if (signal.includes("lang")) return "Defina o atributo lang no elemento <html>, por exemplo lang=\"pt-BR\".";
   if (signal.includes("https") || signal.includes("tls") || signal.includes("secure")) return "Sirva o site por HTTPS e revise recursos, cookies e redirecionamentos para manter a conexão segura.";
   if (signal.includes("content-security-policy") || signal.includes("csp")) return "Configure uma Content-Security-Policy restritiva no servidor e ajuste as fontes permitidas.";

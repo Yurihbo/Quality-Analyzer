@@ -361,6 +361,8 @@ export async function analyzeWebsite(rawUrl: string): Promise<AnalysisReport> {
   unlabeledButtons.slice(0, 10).forEach((button, index) => errors.push(issue(`a11y-button-${index}`, "medium", "Button without accessible name", "Accessibility", `HTML line ${lineAt(html, button.index ?? 0)}`, "No visible text, aria-label, or title was detected.", button[0])));
   if (!title) errors.push(issue("seo-title", "high", "Missing page title", "SEO", "head", "No <title> element with readable text was detected."));
   if (!description) errors.push(issue("seo-description", "medium", "Missing meta description", "SEO", "head", "No meta name=description tag was detected."));
+  if (h1Count > 1) errors.push(issue("seo-multiple-h1", "low", "Multiple H1 headings", "SEO", "body", `${h1Count} H1 elements were detected; the main content hierarchy may be ambiguous.`));
+  if (!canonical) errors.push(issue("seo-canonical", "medium", "Missing canonical URL", "SEO", "head", "No <link rel=canonical> element was detected."));
   if (response.status >= 400) errors.push(issue(`http-${response.status}`, response.status >= 500 ? "critical" : "high", `${response.status} ${response.statusText || "HTTP response"}`, "HTTP", finalUrl, `The analyzed page returned HTTP ${response.status}.`, undefined, response.status));
 
   const toProbe = refs.filter((ref) => ref.kind === "img" || ref.kind === "script" || ref.kind === "link").slice(0, 12);
@@ -399,12 +401,14 @@ export async function analyzeWebsite(rawUrl: string): Promise<AnalysisReport> {
   seoChecks.push(check("Viewport", viewport ? "pass" : "warn", viewport ? "Responsive viewport configured" : "No viewport meta tag detected"));
   seoChecks.push(check("H1 structure", h1Count === 1 ? "pass" : h1Count === 0 ? "fail" : "warn", `${h1Count} H1 element(s) detected`));
   seoChecks.push(check("Open Graph", ogTitle && ogDescription && ogImage ? "pass" : "warn", ogTitle && ogDescription && ogImage ? "Title, description and image detected" : "Open Graph metadata is incomplete"));
+  if (!ogTitle || !ogDescription || !ogImage) errors.push(issue("seo-open-graph", "low", "Incomplete Open Graph metadata", "SEO", "head", `Missing ${[!ogTitle && "og:title", !ogDescription && "og:description", !ogImage && "og:image"].filter(Boolean).join(", ")}.`));
   if (!h1Count) errors.push(issue("seo-h1", "medium", "Missing H1 heading", "SEO", "body", "No H1 element was detected in the document."));
 
   const robots = await probeResource(new URL("/robots.txt", finalUrl).toString());
   const sitemap = await probeResource(new URL("/sitemap.xml", finalUrl).toString());
   seoChecks.push(check("robots.txt", robots.status === 200 ? "pass" : "warn", robots.status === 200 ? "robots.txt is reachable" : "robots.txt was not found or not reachable"));
   seoChecks.push(check("sitemap.xml", sitemap.status === 200 ? "pass" : "warn", sitemap.status === 200 ? "sitemap.xml is reachable" : "sitemap.xml was not found or not reachable"));
+  if (robots.status >= 400 || robots.status === 0) errors.push(issue("seo-robots", "low", "Missing robots.txt", "SEO", "/robots.txt", `GET /robots.txt → ${robots.status || "request failed"}`));
   if (sitemap.status >= 400 || sitemap.status === 0) errors.push(issue("seo-sitemap", "low", "Missing sitemap", "SEO", "/sitemap.xml", `GET /sitemap.xml → ${sitemap.status || "request failed"}`));
 
   let securityScore = finalParsed.protocol === "https:" ? 35 : 10;
