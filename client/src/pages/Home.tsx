@@ -125,6 +125,26 @@ function TechnologyItem({ technology }: { technology: Technology }) {
   );
 }
 
+function getFixAdvice(error: Finding) {
+  const signal = `${error.title} ${error.category} ${error.evidence}`.toLowerCase();
+  if (signal.includes("title")) return "Adicione uma tag <title> única, curta e descritiva para a página.";
+  if (signal.includes("description")) return "Inclua uma meta description objetiva, com cerca de 150–160 caracteres e a intenção principal da página.";
+  if (signal.includes("h1") || signal.includes("heading")) return "Use um único H1 visível, descrevendo claramente o assunto principal da página.";
+  if (signal.includes("alt") || signal.includes("image")) return "Adicione alt text descritivo às imagens informativas; use alt vazio apenas em imagens decorativas.";
+  if (signal.includes("viewport")) return "Inclua a meta viewport para que o layout se adapte corretamente a celulares.";
+  if (signal.includes("canonical")) return "Defina uma URL canônica absoluta para evitar sinais duplicados aos mecanismos de busca.";
+  if (signal.includes("lang")) return "Defina o atributo lang no elemento <html>, por exemplo lang=\"pt-BR\".";
+  if (signal.includes("https") || signal.includes("tls") || signal.includes("secure")) return "Sirva o site por HTTPS e revise recursos, cookies e redirecionamentos para manter a conexão segura.";
+  if (signal.includes("content-security-policy") || signal.includes("csp")) return "Configure uma Content-Security-Policy restritiva no servidor e ajuste as fontes permitidas.";
+  if (signal.includes("header") || signal.includes("x-frame") || signal.includes("referrer")) return "Configure os headers de segurança recomendados no servidor ou CDN e valide o comportamento em produção.";
+  if (signal.includes("compression") || signal.includes("gzip") || signal.includes("brotli")) return "Ative Brotli ou gzip no servidor/CDN para reduzir o tamanho das respostas textuais.";
+  if (signal.includes("redirect") || signal.includes("status")) return "Revise a cadeia de redirecionamentos e faça a URL final responder diretamente com o status esperado.";
+  if (signal.includes("robots")) return "Publique um robots.txt coerente com as páginas que deseja permitir ou bloquear para rastreamento.";
+  if (signal.includes("favicon")) return "Adicione um favicon e referencie-o no <head> com uma URL estável.";
+  if (signal.includes("size") || signal.includes("large") || signal.includes("performance")) return "Reduza o peso da página: comprima imagens, remova JavaScript não utilizado e divida recursos grandes.";
+  return "Revise a evidência acima no código-fonte e aplique a correção no ponto indicado; depois execute uma nova análise para confirmar.";
+}
+
 function ErrorCard({ error }: { error: Finding }) {
   const styles = {
     critical: "border-red-400/30 bg-red-400/[0.06] text-red-300",
@@ -145,6 +165,7 @@ function ErrorCard({ error }: { error: Finding }) {
         <div><p className="uppercase tracking-[0.16em] text-zinc-600">Evidence</p><p className="mt-1 break-words font-mono leading-5 text-zinc-400">{error.evidence}</p></div>
       </div>
       {error.element && <div className="mt-4 rounded-lg border border-white/[0.06] bg-black/30 p-3"><p className="mb-1 text-[10px] uppercase tracking-[0.16em] text-zinc-600">Element</p><code className="block break-all text-[11px] leading-5 text-zinc-500">{error.element}</code></div>}
+      <div className="fix-advice mt-4"><p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-lime-300/80">How to fix</p><p className="mt-2 text-xs leading-5 text-zinc-300">{getFixAdvice(error)}</p></div>
     </article>
   );
 }

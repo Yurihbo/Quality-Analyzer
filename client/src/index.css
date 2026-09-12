@@ -77,6 +77,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .severity-summary { display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,.08); background: rgba(0,0,0,.18); padding: 13px 14px; color: #71717a; font-size: 11px; transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out); }
 .severity-summary:hover, .severity-summary-active { border-color: rgba(215,243,107,.35); background: rgba(215,243,107,.05); color: #d7f36b; }
 .severity-summary strong { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px; font-weight: 500; }
+.fix-advice { border-left: 2px solid rgba(215,243,107,.55); background: rgba(215,243,107,.05); padding: 10px 12px; }
 .loading-row { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.06); padding: 13px 0; color: #a1a1aa; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
 
 @media (max-width: 800px) {
