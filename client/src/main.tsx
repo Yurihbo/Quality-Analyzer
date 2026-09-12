@@ -9,6 +9,12 @@ import "./index.css";
 const queryClient = new QueryClient();
 const API_BASE_URL = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") || "";
 
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).catch(() => undefined);
+  });
+}
+
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({

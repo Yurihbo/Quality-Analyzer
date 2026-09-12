@@ -21,7 +21,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .topbar { position: sticky; top: 0; z-index: 30; display: flex; min-height: 68px; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,.07); background: rgba(10,10,10,.9); padding: 0 24px; backdrop-filter: blur(18px); }
 .brand-mark { display: inline-flex; align-items: center; gap: 10px; color: #f4f4f5; font-size: 13px; font-weight: 600; letter-spacing: -.02em; }
 .brand-mark em { color: #71717a; font-style: normal; font-weight: 400; }
-.brand-square { display: inline-flex; height: 24px; width: 24px; align-items: center; justify-content: center; border: 1px solid rgba(215,243,107,.28); background: rgba(215,243,107,.08); color: #d7f36b; font-size: 12px; font-weight: 700; }
+.brand-square { display: inline-flex; height: 28px; width: 28px; align-items: center; justify-content: center; border: 1px solid rgba(215,243,107,.28); border-radius: 8px; background: #111; object-fit: cover; }
 .topnav { display: flex; align-items: center; gap: 21px; margin-left: auto; margin-right: 34px; }
 .topnav button { color: #71717a; font-size: 12px; transition: color 160ms var(--ease-out); }
 .topnav button:hover, .topnav .topnav-active { color: #f4f4f5; }
@@ -72,17 +72,18 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .loading-row { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.06); padding: 13px 0; color: #a1a1aa; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
 
 @media (max-width: 800px) {
-  .topbar { padding: 0 16px; }
+  .topbar { min-height: 60px; padding: env(safe-area-inset-top) 16px 0; }
   .topnav { gap: 12px; margin-right: 0; }
   .topbar-status { display: none; }
-  .hero-shell { padding: 82px 20px 36px; }
+  .hero-shell { padding: 64px 20px calc(36px + env(safe-area-inset-bottom)); }
   .hero-shell::before, .hero-shell::after { display: none; }
   .hero-copy h1 { font-size: clamp(3.2rem, 15vw, 5.2rem); }
   .hero-copy p { font-size: 14px; }
-  .url-input-wrap { align-items: stretch; flex-wrap: wrap; padding: 14px; }
+  .url-input-wrap { align-items: stretch; flex-wrap: wrap; gap: 10px; border-radius: 14px; padding: 12px; }
   .url-input-wrap input { height: 34px; flex-basis: calc(100% - 40px); }
-  .analyze-button { width: 100%; justify-content: center; }
-  .home-grid { margin-top: 82px; }
+  .analyze-button { width: 100%; min-height: 50px; justify-content: center; border-radius: 10px; }
+  .form-note { gap: 10px 16px; line-height: 1.5; }
+  .home-grid { margin-top: 64px; }
   .capability-grid { grid-template-columns: repeat(2, 1fr); }
   .capability:last-child { grid-column: span 2; }
 }
@@ -92,10 +93,15 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .topnav { gap: 9px; }
   .topnav button { font-size: 11px; }
   .topnav button:nth-child(2), .topnav button:nth-child(3) { display: none; }
-  .hero-shell { padding-top: 65px; }
-  .hero-copy h1 { font-size: 3.5rem; }
+  .hero-shell { padding-top: 54px; }
+  .hero-copy h1 { font-size: clamp(2.85rem, 14vw, 3.5rem); letter-spacing: -.08em; }
+  .hero-copy p { margin-top: 22px; font-size: 13px; line-height: 1.65; }
+  .analyze-form { margin-top: 30px; }
   .capability-grid { grid-template-columns: 1fr; }
   .capability:last-child { grid-column: auto; }
+  .capability { min-height: 106px; padding: 16px; }
+  .capability p { margin-top: 22px; }
+  .hero-foot { margin-top: 52px; font-size: 9px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

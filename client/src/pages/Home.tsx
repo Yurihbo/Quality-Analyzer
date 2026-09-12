@@ -208,7 +208,7 @@ export default function Home() {
 }
 
 function TopBar({ onReset }: { onReset: () => void }) {
-  return <header className="topbar"><button onClick={onReset} className="brand-mark" aria-label="Quality Analyzer home"><span className="brand-square">Q</span><span>Quality <em>Analyzer</em></span></button><nav className="topnav"><button className="topnav-active" onClick={onReset}>Analyze</button></nav><div className="topbar-status"><span className="status-pulse" />Passive mode</div></header>;
+  return <header className="topbar"><button onClick={onReset} className="brand-mark" aria-label="Quality Analyzer home"><img className="brand-square" src={`${import.meta.env.BASE_URL}favicon-32.png`} alt="" /><span>Quality <em>Analyzer</em></span></button><nav className="topnav"><button className="topnav-active" onClick={onReset}>Analyze</button></nav><div className="topbar-status"><span className="status-pulse" />Passive mode</div></header>;
 }
 
 function Capability({ icon: Icon, title, description }: { icon: typeof Gauge; title: string; description: string }) {
