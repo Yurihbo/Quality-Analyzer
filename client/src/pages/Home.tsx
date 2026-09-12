@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import type { AnalysisReport, Check, Finding, Technology } from "../../../server/analyzer";
 import {
   AlertCircle,
@@ -34,6 +34,11 @@ const severityOrder = ["all", "critical", "high", "medium", "low"] as const;
 type SeverityFilter = (typeof severityOrder)[number];
 
 type CheckStatus = Check["status"];
+
+type InstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+};
 
 function formatBytes(bytes: number) {
   if (!bytes) return "0 B";
@@ -208,7 +213,39 @@ export default function Home() {
 }
 
 function TopBar({ onReset }: { onReset: () => void }) {
-  return <header className="topbar"><button onClick={onReset} className="brand-mark" aria-label="Quality Analyzer home"><img className="brand-square" src={`${import.meta.env.BASE_URL}favicon-32.png`} alt="" /><span>Quality <em>Analyzer</em></span></button><nav className="topnav"><button className="topnav-active" onClick={onReset}>Analyze</button></nav><div className="topbar-status"><span className="status-pulse" />Passive mode</div></header>;
+  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || Boolean((navigator as Navigator & { standalone?: boolean }).standalone);
+    setIsInstalled(standalone);
+
+    const handleBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event as InstallPromptEvent);
+    };
+    const handleAppInstalled = () => {
+      setInstallPrompt(null);
+      setIsInstalled(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    const choice = await installPrompt.userChoice;
+    if (choice.outcome === "accepted") setIsInstalled(true);
+    setInstallPrompt(null);
+  };
+
+  return <header className="topbar"><button onClick={onReset} className="brand-mark" aria-label="Quality Analyzer home"><img className="brand-square" src={`${import.meta.env.BASE_URL}favicon-32.png`} alt="" /><span>Quality <em>Analyzer</em></span></button><nav className="topnav"><button className="topnav-active" onClick={onReset}>Analyze</button>{!isInstalled && <button className="install-button" onClick={handleInstall} disabled={!installPrompt} aria-label={installPrompt ? "Install Quality Analyzer" : "Install available from the browser menu"}>Install</button>}</nav><div className="topbar-status"><span className="status-pulse" />Passive mode</div></header>;
 }
 
 function Capability({ icon: Icon, title, description }: { icon: typeof Gauge; title: string; description: string }) {

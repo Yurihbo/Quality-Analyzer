@@ -25,6 +25,9 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .topnav { display: flex; align-items: center; gap: 21px; margin-left: auto; margin-right: 34px; }
 .topnav button { color: #71717a; font-size: 12px; transition: color 160ms var(--ease-out); }
 .topnav button:hover, .topnav .topnav-active { color: #f4f4f5; }
+.topnav .install-button { color: #d7f36b; opacity: .82; transition: color 160ms var(--ease-out), opacity 160ms var(--ease-out); }
+.topnav .install-button:hover:not(:disabled) { color: #efffa8; opacity: 1; }
+.topnav .install-button:disabled { cursor: default; opacity: .46; }
 .topnav .topnav-active { position: relative; }
 .topnav .topnav-active::after { position: absolute; bottom: -25px; left: 50%; height: 2px; width: 14px; transform: translateX(-50%); background: #d7f36b; content: ""; }
 .topbar-status { display: inline-flex; align-items: center; gap: 7px; color: #52525b; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
@@ -92,7 +95,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .brand-mark span:last-child { display: none; }
   .topnav { gap: 9px; }
   .topnav button { font-size: 11px; }
-  .topnav button:nth-child(2), .topnav button:nth-child(3) { display: none; }
+  .topnav button:nth-child(n+3) { display: none; }
   .hero-shell { padding-top: 54px; }
   .hero-copy h1 { font-size: clamp(2.85rem, 14vw, 3.5rem); letter-spacing: -.08em; }
   .hero-copy p { margin-top: 22px; font-size: 13px; line-height: 1.65; }
